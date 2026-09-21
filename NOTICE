@@ -1,0 +1,13 @@
+NOTICE
+======
+
+This project adapts the curriculum structure, lesson sequence and teaching
+scenarios of "Generative AI for Beginners":
+
+    https://github.com/microsoft/generative-ai-for-beginners
+    Copyright (c) Microsoft Corporation
+    Licensed under the MIT License
+
+The port to the Google Gemini API, the condensed notes, the quizzes, the
+practical tasks and their grading criteria are original work by this project's
+author, and are licensed under the MIT License in LICENSE.
