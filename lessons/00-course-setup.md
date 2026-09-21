@@ -10,7 +10,7 @@ A working Python env + a free Gemini API key, so every later lesson runs at zero
 
 ## 1. Get the free API key
 
-1. Go to **[aistudio.google.com](https://aistudio.google.com/apikey)** and sign in with a Google account.
+1. Go to **[aistudio.google.com/app/api-keys](https://aistudio.google.com/app/api-keys)** and sign in with a Google account.
 2. **Create API key** → copy it. No credit card needed for the free tier.
 3. Check your live limits any time at [aistudio.google.com/rate-limit](https://aistudio.google.com/rate-limit) — free-tier RPM/TPM/RPD vary by model and change often, so read the dashboard rather than trusting a blog post.
 
