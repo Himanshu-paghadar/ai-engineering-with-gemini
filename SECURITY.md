@@ -7,7 +7,7 @@ ships no service and stores no user data. Even so, if you find a security issue,
 please report it.
 
 **Do not open a public issue for a security problem.** Instead use
-[GitHub's private vulnerability reporting](https://github.com/himanshu-paghadar/ai-engineering-with-gemini/security/advisories/new),
+[GitHub's private vulnerability reporting](https://github.com/Himanshu-paghadar/ai-engineering-with-gemini/security/advisories/new),
 or email the address on the maintainer's GitHub profile.
 
 Please include what the issue is, how to reproduce it, and the impact you think

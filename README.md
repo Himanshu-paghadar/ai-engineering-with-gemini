@@ -1,8 +1,8 @@
 # AI Engineering with Gemini
 
-**A 22-lesson, build-first curriculum for generative AI — ported from Azure OpenAI to the Google Gemini API, and verified against a live endpoint rather than copied from docs.**
+I took Microsoft's [Generative AI for Beginners](https://github.com/microsoft/generative-ai-for-beginners) course, rewrote it for Google's Gemini API, and cut it down to the parts that actually matter. 22 lessons. Every one ends with a quiz and something to build.
 
-Every lesson ends with a quiz you can grade yourself on and a practical task with explicit pass/fail criteria. The whole curriculum runs on the Gemini **free tier** — [grab a free API key here](https://aistudio.google.com/app/api-keys), no credit card needed.
+It runs on the **free tier**. You don't need a credit card or a cloud account.
 
 ```python
 from google import genai
@@ -14,172 +14,165 @@ print(client.interactions.create(
 ).output_text)
 ```
 
----
+## Why I made this
 
-## Why this repo exists
+Microsoft's course is genuinely good, but I hit two walls with it.
 
-Microsoft's [Generative AI for Beginners](https://github.com/microsoft/generative-ai-for-beginners) is an excellent curriculum. Two things stopped me using it directly:
+The first was Azure. Every code sample needs an Azure subscription and an OpenAI deployment. I wanted to start learning on a Tuesday evening, not fill in a cloud signup form and worry about billing.
 
-1. **It assumes an Azure subscription.** Every code sample targets Azure OpenAI or the Foundry model catalog. That's a paywall and a signup flow between you and the first line of running code.
-2. **It's written to be read, not drilled.** Long prose, few checkpoints. I wanted something I could revise from in ten minutes and then prove I'd actually understood.
+The second was that it's written to be read. Long prose, not many checkpoints. I'd finish a lesson feeling like I understood it and have no way to find out whether I actually did.
 
-So I rebuilt it: **retargeted to Gemini**, compressed to the concepts and code that carry the weight, and rebuilt around self-assessment.
+So I rebuilt it. Gemini instead of Azure, notes I can revise from in ten minutes, and an exercise at the end of each lesson with pass/fail criteria I can't talk myself out of.
 
-> **The goal was never to collect notes.** It was to end up with a set of claims I'd personally verified and a set of exercises whose passing criteria I couldn't fudge.
+## What I changed
 
-## What makes this different from a summary
+I ran the API instead of trusting the docs. That turned up four things worth knowing before you start:
 
-I ran the API instead of trusting the documentation. That surfaced four things that would otherwise have shipped as confidently-wrong notes:
+**The SDK moved.** Current docs use `client.interactions.create()`. The older `client.models.generate_content()` still works, so tutorials out there are split between them. My notes cover both and tell you which you're looking at.
 
-| Finding                                             | Why it matters                                                                                                                                                                       |
-| --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **The SDK moved to `client.interactions.create()`** | `client.models.generate_content()` still works, so tutorials are split across both. The notes cover each and say which you're reading.                                               |
-| **Fine-tuning no longer exists on the Gemini API**  | No tunable model since Gemini 1.5 Flash-001's deprecation. An entire lesson's premise was invalid — so Lesson 18 says so up front and pivots to structured output, few-shot and RAG. |
-| **Reasoning tokens dominate small requests**        | An 8-token prompt returning a 14-token answer burned**351 tokens — 329 of them invisible internal reasoning**. A 25× cost multiplier that no tutorial mentions.                      |
-| **Google Search grounding 429s on the free tier**   | Documented as rate-limited instead of presented as freely available.                                                                                                                 |
+**You can't fine-tune on the Gemini API.** There hasn't been a tunable model since Gemini 1.5 Flash-001 was deprecated. That's an entire lesson whose premise no longer holds, so Lesson 18 says so at the top and covers what to do instead.
 
-Model IDs, embedding dimensionality (3072), structured output, function calling and the full RAG pipeline were each confirmed end to end before being written up.
+**Thinking tokens are expensive.** I sent an 8-token prompt and got a 14-token answer back. It cost 351 tokens. 329 of those were internal reasoning I never saw. Nothing warned me about this, so the notes do.
 
-## How each lesson is built
+**Google Search grounding hits rate limits on the free tier.** It 429'd while I was testing, so it's documented as rate-limited rather than presented as free.
 
-```
-concepts  →  runnable Python  →  🧠 Crux Notes  →  ✅ Quiz  →  🛠️ Practical Task
-   what        copy-paste ready     revise in 60s    116 Qs      graded, not vibes
-```
+## Goals
 
-Practical tasks specify a deliverable file, a **passing-criteria table**, and **test cases with expected behaviour**. The criteria deliberately target the awkward paths, because that's where the real failures live:
+What I wanted out of this, and what you'd get from working through it:
 
-- Lesson 08 — query `"purple elephant tax law"`: **all scores must be low**, proving retrieval always returns its best _k_ however irrelevant
-- Lesson 11 — `"Who was Napoleon?"` must make **zero** tool calls; knowing when _not_ to act is half the job
-- Lesson 13 — **at least one prompt injection must succeed** against the naive build before you're allowed to harden it
-- Lesson 15 — `"Capital of Mongolia?"` must refuse **without calling the model at all**
-- Lesson 17 — asked about something absent, the agent must report low confidence, not invent findings
+- Build the five things that show up in every real AI project: a chat app, semantic search, RAG, function calling, and an agent
+- Know when to reach for RAG instead of fine-tuning, and a small model instead of a big one
+- Write prompts that hold up across a hundred calls instead of one lucky demo
+- Take LLM security seriously, especially prompt injection
+- Be able to tell whether a change made things better, using an eval set rather than a hunch
 
-## Curriculum
+## Learning curve
 
-| #   | Lesson                                                               | Type      | Core takeaway                                  |
-| --- | -------------------------------------------------------------------- | --------- | ---------------------------------------------- |
-| 00  | [Course Setup](lessons/00-course-setup.md)                           | Setup     | SDK,`.env`, model IDs, the thinking-token trap |
-| 01  | [Intro to GenAI &amp; LLMs](lessons/01-introduction-to-genai.md)     | Learn     | Tokenize → predict → sample                    |
-| 02  | [Comparing Models](lessons/02-comparing-llms.md)                     | Learn     | Model taxonomy + the improvement ladder        |
-| 03  | [Responsible AI](lessons/03-responsible-ai.md)                       | Learn     | Four mitigation layers; safety settings        |
-| 04  | [Prompt Fundamentals](lessons/04-prompt-engineering-fundamentals.md) | Learn     | Zero/one/few-shot, cues, templates             |
-| 05  | [Advanced Prompts](lessons/05-advanced-prompts.md)                   | Learn     | CoT, self-refine, maieutic, temperature        |
-| 06  | [Text Generation Apps](lessons/06-text-generation-apps.md)           | **Build** | First app; chaining turns                      |
-| 07  | [Chat Applications](lessons/07-building-chat-applications.md)        | **Build** | State, system-message framework, metrics       |
-| 08  | [Search Applications](lessons/08-building-search-applications.md)    | **Build** | Embeddings + cosine similarity                 |
-| 09  | [Image Applications](lessons/09-building-image-applications.md)      | **Build** | Image models, base64, metaprompts              |
-| 10  | [Low-Code AI](lessons/10-low-code-ai-applications.md)                | Learn     | Prebuilt vs custom; structured extraction      |
-| 11  | [Function Calling](lessons/11-function-calling.md) ⭐                | **Build** | Structured output + tools, the 3-step flow     |
-| 12  | [Designing UX](lessons/12-designing-ux.md)                           | Learn     | Calibrated trust: explainability + control     |
-| 13  | [Securing AI Apps](lessons/13-securing-ai-applications.md)           | Learn     | Poisoning,**prompt injection**, red teaming    |
-| 14  | [App Lifecycle](lessons/14-genai-application-lifecycle.md) ⭐        | **Build** | LLMOps; build an evaluation set                |
-| 15  | [RAG &amp; Vector DBs](lessons/15-rag-and-vector-databases.md) ⭐    | **Build** | Chunk → embed → retrieve → ground              |
-| 16  | [Open Source Models](lessons/16-open-source-models.md)               | Learn     | Gemma, Llama, Mistral; running local           |
-| 17  | [AI Agents](lessons/17-ai-agents.md) ⭐                              | **Build** | LLM + state + tools + a bounded loop           |
-| 18  | [Fine-Tuning](lessons/18-fine-tuning.md)                             | Learn     | Unavailable here — and what to do instead      |
-| 19  | [Small Language Models](lessons/19-small-language-models.md)         | Learn     | Find the*smallest* model that passes           |
-| 20  | [Mistral Models](lessons/20-mistral-models.md)                       | Learn     | Context windows, tokenizer economics           |
-| 21  | [Meta Llama Models](lessons/21-meta-llama-models.md)                 | Learn     | Native tools, multimodality                    |
+| Stage | Lessons | Time | You'll be doing |
+|---|---|---|---|
+| **Foundations** | 01–05 | ~4 hrs | Reading and prompting. No architecture yet. |
+| **First builds** | 06, 07 | ~4 hrs | A working CLI app and a chat bot that remembers context. |
+| **The step up** | 11, 08 | ~6 hrs | Function calling and embeddings. This is where it stops feeling like chatting and starts feeling like engineering. |
+| **The real thing** | 15, 17 | ~8 hrs | RAG and agents. Hardest part of the course, and the reason to do the rest. |
+| **Production** | 12, 13, 14 | ~5 hrs | UX, security, evaluation. Less fun, matters more than you'd think. |
+| **Breadth** | 09, 10, 16, 18–21 | ~6 hrs | Images, open models, small models, other model families. |
 
-⭐ = the four that carry the most practical weight. If you only do four, do those.
+Roughly 30 hours if you do the exercises properly. Less if you only read, but then you're back to the problem I started with.
 
-## Quickstart
+**Difficulty jumps in two places.** Lesson 11 (function calling), because you stop treating the model as a text box and start wiring it into your code. And Lesson 15 (RAG), because it's the first time several pieces have to work together.
 
-### 1. Get a free Gemini API key
+## Lessons
 
-👉 **[aistudio.google.com/app/api-keys](https://aistudio.google.com/app/api-keys)**
+Learn = concepts. Build = you write code.
 
-Sign in with any Google account and click **Create API key**. **No credit card required** — the free
-tier covers this entire curriculum. Copy the key; you'll paste it in step 3.
+| # | Lesson | | |
+|---|---|---|---|
+| 00 | [Setup](lessons/00-course-setup.md) | Setup | SDK, keys, model IDs |
+| 01 | [Intro to GenAI & LLMs](lessons/01-introduction-to-genai.md) | Learn | How a model actually generates text |
+| 02 | [Comparing Models](lessons/02-comparing-llms.md) | Learn | Picking one, and four ways to improve results |
+| 03 | [Responsible AI](lessons/03-responsible-ai.md) | Learn | Harms and the four places to mitigate them |
+| 04 | [Prompt Fundamentals](lessons/04-prompt-engineering-fundamentals.md) | Learn | Zero-shot to few-shot, cues, templates |
+| 05 | [Advanced Prompts](lessons/05-advanced-prompts.md) | Learn | Chain-of-thought, self-refine, temperature |
+| 06 | [Text Generation Apps](lessons/06-text-generation-apps.md) | Build | Your first app |
+| 07 | [Chat Applications](lessons/07-building-chat-applications.md) | Build | Multi-turn state |
+| 08 | [Search Applications](lessons/08-building-search-applications.md) | Build | Embeddings and cosine similarity |
+| 09 | [Image Applications](lessons/09-building-image-applications.md) | Build | Generating and editing images |
+| 10 | [Low-Code AI](lessons/10-low-code-ai-applications.md) | Learn | When not to write code |
+| 11 | [Function Calling](lessons/11-function-calling.md) | Build | Letting the model call your code ⭐ |
+| 12 | [Designing UX](lessons/12-designing-ux.md) | Learn | Trust, and why too much is as bad as too little |
+| 13 | [Securing AI Apps](lessons/13-securing-ai-applications.md) | Learn | Prompt injection, poisoning, red teaming |
+| 14 | [App Lifecycle](lessons/14-genai-application-lifecycle.md) | Build | Evaluation sets ⭐ |
+| 15 | [RAG & Vector DBs](lessons/15-rag-and-vector-databases.md) | Build | Grounding a model in your own data ⭐ |
+| 16 | [Open Source Models](lessons/16-open-source-models.md) | Learn | Gemma, Llama, Mistral, running local |
+| 17 | [AI Agents](lessons/17-ai-agents.md) | Build | Tools, state, and a loop ⭐ |
+| 18 | [Fine-Tuning](lessons/18-fine-tuning.md) | Learn | Why you probably don't need it |
+| 19 | [Small Language Models](lessons/19-small-language-models.md) | Learn | Finding the smallest model that works |
+| 20 | [Mistral Models](lessons/20-mistral-models.md) | Learn | Context windows, tokenizer cost |
+| 21 | [Meta Llama Models](lessons/21-meta-llama-models.md) | Learn | Native tools, multimodality |
 
-> Check your live quota any time at [aistudio.google.com/rate-limit](https://aistudio.google.com/rate-limit).
-> Free-tier limits vary by model and change over time, so read the dashboard rather than trusting a blog post.
+⭐ If you only do four, do these.
 
-### 2. Clone and install
+## Getting started
+
+**1. Get a free API key**
+
+Go to [aistudio.google.com/app/api-keys](https://aistudio.google.com/app/api-keys), sign in with any Google account, click **Create API key**. No credit card. Copy it.
+
+You can check your quota at [aistudio.google.com/rate-limit](https://aistudio.google.com/rate-limit). Free limits change, so trust that page over anything written down.
+
+**2. Clone and install**
 
 ```bash
-git clone https://github.com/himanshu-paghadar/ai-engineering-with-gemini
+git clone https://github.com/Himanshu-paghadar/ai-engineering-with-gemini
 cd ai-engineering-with-gemini
 
 python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### 3. Add your key
+**3. Add your key**
 
 ```bash
 cp .env.example .env
 ```
 
-Open `.env` and paste the key from step 1:
+Open `.env` and paste it in:
 
 ```env
 GEMINI_API_KEY=your_key_here
 ```
 
-`.env` is gitignored — your key never reaches the repo. Never paste a key into a `.md` file, a
-notebook cell, a screenshot or a chat; if one leaks, delete and recreate it in AI Studio immediately.
+`.env` is gitignored, so your key stays out of the repo. Don't put it in a notebook cell, a screenshot or a chat message. If it leaks, delete it in AI Studio and make a new one. Takes ten seconds.
 
-### 4. Verify
+**4. Check it works**
 
 ```bash
 python lessons/practice/00_setup_check.py
 ```
 
-**Suggested Lesson path :**
+## How the exercises work
 
-- **Concepts** 01 → 02 → 03 → 04 → 05
-- **Core build** 06 → 07 → 11 → 08 → 15 → 17
-- **Production** 12 → 13 → 14
-- **Breadth** 09 → 10 → 16 → 18 → 19 → 20 → 21
+Each lesson ends with a task. The task names a file to write, a table of pass/fail criteria, and test cases with expected behaviour. The criteria go after the awkward cases on purpose, because that's where you find out whether you understood it:
 
-Tasks 08 → 15 → 14 → 17 build on each other — do those in order. The rest stand alone.
+- **Lesson 08** — search for "purple elephant tax law". Every score has to come back low. Retrieval always hands you its best results, however useless they are, and you need to see that happen.
+- **Lesson 11** — ask "Who was Napoleon?". It must call zero tools. A model that reaches for a tool every time is as broken as one that never does.
+- **Lesson 13** — at least one prompt injection has to succeed against the naive version before you're allowed to fix it.
+- **Lesson 15** — ask for the capital of Mongolia. It has to refuse without calling the model at all.
+- **Lesson 17** — ask the agent about something absent from its notes. It must say it doesn't know instead of inventing an answer.
 
-## Repo layout
+Track what you've finished in [PROGRESS.md](lessons/PROGRESS.md).
 
-```
-lessons/
-├── README.md              index and learning path
-├── PROGRESS.md            checkbox tracker + task dependency graph
-├── 00-…21-*.md            the 22 lessons
-└── practice/              your task deliverables land here
-.env.example               copy to .env and add your key
-requirements.txt           pinned dependencies
-```
+## Where things stand
 
-## Status
+All 22 lessons are written and the API behaviour in them is verified. 116 quiz questions with answers. 22 exercises specified, with 141 criteria between them.
 
-Honest state of play, so nobody has to guess:
-
-- ✅ **All 22 lessons written**, with the API surface verified against a live endpoint
-- ✅ **116 quiz questions** with answers
-- ✅ **22 practical tasks specified** — deliverables, 141 pass/fail criteria rows, test cases
-- 🔄 **Task solutions in progress** — `practice/` is the working area; see [PROGRESS.md](lessons/PROGRESS.md) for what's done
-
-The tasks are specifications I wrote, not solutions I've shipped. Where a threshold needs tuning — Lesson 15's retrieval cut-off, for instance — the task tells you to derive it from measured similarity scores rather than hardcoding a number I guessed.
-
-## Notes on the Gemini port
-
-Things that differ from the upstream Azure-based course:
-
-- Conversation state via `previous_interaction_id`, not by resending history
-- Image models return **base64**, not URLs, and accept no `temperature`
-- Fine-tuning is unavailable — system instructions, few-shot, structured output and RAG carry the load
-- Prefer the `-latest` model aliases so code doesn't rot between model generations
-- Watch `thoughtsTokenCount`; it's the free tier's most common surprise
-
-## Contributing
-
-Corrections and improvements are welcome — especially anything that has drifted as
-the Gemini API evolves. See [CONTRIBUTING.md](CONTRIBUTING.md) for the setup, the
-lesson structure to follow, and the one rule that matters: **verify against a live
-endpoint before you write it down**.
-
-- 🐛 [Report a broken lesson or stale API call](https://github.com/himanshu-paghadar/ai-engineering-with-gemini/issues/new)
-- 🔒 [Security policy](SECURITY.md) — including how to handle your own API key safely
-- 🤝 [Code of conduct](CODE_OF_CONDUCT.md) — beginners explicitly welcome; no question is too basic
+The exercise **solutions** are still in progress. `lessons/practice/` is where they go. So: the specs are real and tested against the API, but I haven't shipped a solution for every one yet. [PROGRESS.md](lessons/PROGRESS.md) tracks which.
 
 ## Credits
 
-Curriculum structure and teaching scenarios adapted from [microsoft/generative-ai-for-beginners](https://github.com/microsoft/generative-ai-for-beginners) (MIT). Code, verification, exercises and grading criteria are my own port to the Gemini API.
+The curriculum structure, lesson order and the running "education startup" scenario come from [**microsoft/generative-ai-for-beginners**](https://github.com/microsoft/generative-ai-for-beginners), MIT licensed. It's a great course and worth reading in full if you have Azure access.
+
+Everything else here is mine: the Gemini port, the condensed notes, the quizzes, the exercises and their grading criteria. See [NOTICE](NOTICE) for the attribution details.
+
+## Contributing
+
+Corrections welcome, especially where the Gemini API has moved on since I wrote something. One rule: **run it before you write it down**. That's the whole point of the repo, and it's how I found the four things listed above.
+
+- [Report a broken lesson](https://github.com/Himanshu-paghadar/ai-engineering-with-gemini/issues/new)
+- [Contributing guide](CONTRIBUTING.md)
+- [Security policy](SECURITY.md), including how to keep your key safe
+- [Code of conduct](CODE_OF_CONDUCT.md). Beginners welcome, no question is too basic.
+
+## Notes on Gemini specifically
+
+Things that differ from the Azure-based original:
+
+- Conversation state uses `previous_interaction_id`, so you don't resend history
+- Image models return base64, not URLs, and don't take a `temperature`
+- Fine-tuning isn't available, so system instructions, few-shot and RAG do that work
+- Use the `-latest` model aliases so your code doesn't break between generations
+- Keep an eye on `thoughtsTokenCount`. It's the free tier's most common surprise.
+
+## License
+
+[MIT](LICENSE)

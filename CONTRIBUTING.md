@@ -28,7 +28,7 @@ gets merged.
 ## Setup
 
 ```bash
-git clone https://github.com/himanshu-paghadar/ai-engineering-with-gemini
+git clone https://github.com/Himanshu-paghadar/ai-engineering-with-gemini
 cd ai-engineering-with-gemini
 
 python -m venv .venv && source .venv/bin/activate
