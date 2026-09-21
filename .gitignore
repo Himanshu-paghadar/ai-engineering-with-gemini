@@ -1,0 +1,20 @@
+# Secrets
+.env
+
+# Python
+.venv/
+venv/
+__pycache__/
+*.pyc
+
+# Notes: ignore stray .md at the root, but keep the lesson notes
+/*.md
+!lessons/
+
+# Practice run artefacts
+lessons/practice/images/
+lessons/practice/14_evals/
+lessons/practice/17_notes/
+lessons/practice/*.jsonl
+lessons/practice/*_index.json
+lessons/practice/*_results.txt
