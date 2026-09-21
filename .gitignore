@@ -7,10 +7,9 @@ venv/
 __pycache__/
 *.pyc
 
-# Notes: ignore stray scratch .md at the root, but keep README and the lessons
-/*.md
-!/README.md
-!lessons/
+# Root markdown (README, LICENSE, CONTRIBUTING, SECURITY, CODE_OF_CONDUCT) is
+# intentional and tracked. Personal / scratch notes are listed explicitly below.
+ai-engineering-learning-path.md
 
 # Practice run artefacts
 lessons/practice/images/

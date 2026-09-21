@@ -169,6 +169,17 @@ Things that differ from the upstream Azure-based course:
 - Prefer the `-latest` model aliases so code doesn't rot between model generations
 - Watch `thoughtsTokenCount`; it's the free tier's most common surprise
 
+## Contributing
+
+Corrections and improvements are welcome — especially anything that has drifted as
+the Gemini API evolves. See [CONTRIBUTING.md](CONTRIBUTING.md) for the setup, the
+lesson structure to follow, and the one rule that matters: **verify against a live
+endpoint before you write it down**.
+
+- 🐛 [Report a broken lesson or stale API call](https://github.com/himanshu-paghadar/ai-engineering-with-gemini/issues/new)
+- 🔒 [Security policy](SECURITY.md) — including how to handle your own API key safely
+- 🤝 [Code of conduct](CODE_OF_CONDUCT.md) — beginners explicitly welcome; no question is too basic
+
 ## Credits
 
 Curriculum structure and teaching scenarios adapted from [microsoft/generative-ai-for-beginners](https://github.com/microsoft/generative-ai-for-beginners) (MIT). Code, verification, exercises and grading criteria are my own port to the Gemini API.
