@@ -40,7 +40,11 @@ def main() -> None:
     print(f"Total tokens:    {r.usage.total_tokens}")
     print(f"Thinking tokens: {r.usage.total_thought_tokens}")
     print(f"Models available: {len(models)}")
-    print(f"First 5 models:  {names}")
+    print(f"First 5 models:  {names[:5]}")
 
 if __name__ == "__main__":
     main()
+
+# What I Learnt :
+# Lesson 00: Environment Setup Check
+# A self-test script that confirms your environment can talk to the Gemini API before you start the course. It loads the API key from a .env file instead of hardcoding it, checks that the key exists before making any calls, and turns common failures into clear next steps: an invalid key means fix it, a rate limit means wait and retry. A successful run prints a test response, its token usage (including hidden thinking tokens), and the available models, so you know the key, SDK, and model all work. Re-run it any time something breaks to tell whether the problem is your setup or your code.
