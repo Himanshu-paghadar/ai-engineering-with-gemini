@@ -153,34 +153,44 @@ This project's key lives in `.env` at the repo root and `.env` is in `.gitignore
 ## ✅ Test Your Knowledge
 
 **1.** Which package do you install, and which import line is correct?
+
 <details><summary>Answer</summary>
 
 `pip install -U google-genai`, then `from google import genai`.
 The older `google-generativeai` package (`import google.generativeai as genai`) is the superseded one.
+
 </details>
 
 **2.** You call `genai.Client()` with no arguments and it works. Where did the key come from?
+
 <details><summary>Answer</summary>
 
 From the `GEMINI_API_KEY` environment variable, which `load_dotenv()` read out of `.env`. The client reads it automatically.
+
 </details>
 
 **3.** A trivial 8-token prompt reported `totalTokenCount: 351`. Explain the gap.
+
 <details><summary>Answer</summary>
 
 `thoughtsTokenCount: 329` — internal reasoning tokens. Gemini thinks before answering and you are billed and rate-limited on those. Use a `flash-lite` model for simple high-volume work.
+
 </details>
 
 **4.** What does `gemini-flash-latest` give you that `gemini-3.8-flash` does not?
+
 <details><summary>Answer</summary>
 
 It is an alias that tracks the current generation, so your code does not rot when a new model ships. Pin an exact version only when you need reproducibility.
+
 </details>
 
 **5.** You get `429 RESOURCE_EXHAUSTED`. Is your key invalid?
+
 <details><summary>Answer</summary>
 
 No — the key is fine. You hit a free-tier rate limit. Back off and retry, or switch to a lighter model. An invalid key returns `API key not valid`, not 429.
+
 </details>
 
 ---
@@ -190,6 +200,7 @@ No — the key is fine. You hit a free-tier rate limit. Back off and retry, or s
 **Build:** `practice/00_setup_check.py` — an environment self-test you can re-run any time something breaks.
 
 ### Requirements
+
 1. Load the key from `.env` (never hardcode it).
 2. Exit with a clear message if `GEMINI_API_KEY` is missing — do not crash with a traceback.
 3. Make one call to `gemini-flash-latest` and print the text.
@@ -198,15 +209,16 @@ No — the key is fine. You hit a free-tier rate limit. Back off and retry, or s
 
 ### Passing criteria
 
-| # | Criterion | How to verify |
-|---|---|---|
-| 1 | Runs clean from the repo root | `python practice/00_setup_check.py` exits 0 |
-| 2 | No key in the source | `grep -c 'AQ\.' practice/00_setup_check.py` returns `0` |
-| 3 | Handles a missing key gracefully | `env -u GEMINI_API_KEY python practice/00_setup_check.py` prints a readable error, no traceback |
-| 4 | Reports token usage | Output contains a thinking-token number |
-| 5 | Lists models | Prints a count of 40+ models |
+| #   | Criterion                        | How to verify                                                                                   |
+| --- | -------------------------------- | ----------------------------------------------------------------------------------------------- |
+| 1   | Runs clean from the repo root    | `python practice/00_setup_check.py` exits 0                                                     |
+| 2   | No key in the source             | `grep -c 'AQ\.' practice/00_setup_check.py` returns `0`                                         |
+| 3   | Handles a missing key gracefully | `env -u GEMINI_API_KEY python practice/00_setup_check.py` prints a readable error, no traceback |
+| 4   | Reports token usage              | Output contains a thinking-token number                                                         |
+| 5   | Lists models                     | Prints a count of 40+ models                                                                    |
 
 ### Verify
+
 ```bash
 python practice/00_setup_check.py && echo "PASS" || echo "FAIL"
 grep -c 'AQ\.' practice/00_setup_check.py   # must print 0
@@ -229,4 +241,5 @@ print("Response:", r.output_text)
 print("Usage:", r.usage)
 print("Models available:", len(list(client.models.list())))
 ```
+
 </details>
